@@ -1,0 +1,1 @@
+PHP katas from the Full Stack specialization at the IT Academy.
