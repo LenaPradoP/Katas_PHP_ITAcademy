@@ -10,42 +10,35 @@ evaluateRace($actions, $track);
 
 function evaluateRace(array $actions, string $track): bool
 {
-    if (!isInputValid($actions, $track)) {
+    $trackArray = str_split($track);
+    
+    if (!isInputValid($actions, $trackArray)) {
         return false;
     }
-    
-    $result = processRace($actions, $track);
+
+    $result = processRace($actions, $trackArray);
     echo "Estado final de la pista: " . $result['finalTrack'] . PHP_EOL;
     echo "¿El atleta ha superado la carrera? " . ($result['success'] ? "Sí" : "No") . PHP_EOL;
+    
     return $result['success'];
 }
 
-function isInputValid(array $actions, string $track): bool
+function isInputValid(array $actions, array $trackArray): bool
 {
-    if (empty($actions) || empty($track)) {
+    if (empty($actions) || empty($trackArray)) {
         echo "Error: Las acciones o la pista no pueden estar vacías." . PHP_EOL;
         return false;
     }
     
-    if (!validateLength($actions, $track)) {
-        return false;
-    }
-    
-    if (!validateActions($actions)) {
-        return false;
-    }
-    
-    if (!validateTrack($track)) {
-        return false;
-    }
-    
-    return true;
+    return validateLength($actions, $trackArray) && 
+           validateActions($actions) && 
+           validateTrack($trackArray);
 }
 
-function validateLength(array $actions, string $track): bool
+function validateLength(array $actions, array $trackArray): bool
 {
-    if (count($actions) !== strlen($track)) {
-        echo "Error: La longitud de las acciones (" . count($actions) . ") no coincide con la pista (" . strlen($track) . ")." . PHP_EOL;
+    if (count($actions) !== count($trackArray)) {
+        echo "Error: La longitud de las acciones (" . count($actions) . ") no coincide con la pista (" . count($trackArray) . ")." . PHP_EOL;
         return false;
     }
     return true;
@@ -62,10 +55,9 @@ function validateActions(array $actions): bool
     return true;
 }
 
-function validateTrack(string $track): bool
+function validateTrack(array $trackArray): bool
 {
-    $sections = str_split($track);
-    foreach ($sections as $index => $section) {
+    foreach ($trackArray as $index => $section) {
         if (!in_array($section, VALID_SECTIONS, true)) {
             echo "Error: La sección '$section' en la posición $index no es válida." . PHP_EOL;
             return false;
@@ -74,19 +66,16 @@ function validateTrack(string $track): bool
     return true;
 }
 
-function processRace(array $actions, string $track): array
+function processRace(array $actions, array $trackArray): array
 {
-    $trackArray = str_split($track);
     $success = true;
     $actionsCount = count($actions);
-    
     for ($i = 0; $i < $actionsCount; $i++) {
         [$trackArray[$i], $actionSuccess] = evaluateAction($actions[$i], $trackArray[$i]);
         if (!$actionSuccess) {
             $success = false;
         }
     }
-    
     return [
         'finalTrack' => implode('', $trackArray),
         'success' => $success
@@ -103,5 +92,4 @@ function evaluateAction(string $action, string $section): array
     }
     return [$section, true];
 }
-
 ?>
