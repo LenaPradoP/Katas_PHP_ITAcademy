@@ -8,6 +8,8 @@ Cada alumn@ està representat/d per un nom.
 
 Fes un programa que, donats aquests noms i un número N, et generi, aleatòriament, N grups on es distribueixin tots aquests alumnes(sense repetició).
 
+NOTA: Había una errata en el enunciado, que en realidad debería pedir grupos de N personas, no N grupos.
+
 Input
 
     ["Pere","Joan","Jesús","Mayte","Julia"] 2
